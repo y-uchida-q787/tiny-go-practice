@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>WASM with TinyGo</title>
+    <script src="wasm_exec.js"></script> <!-- Goのランタイム -->
+  </head>
+  <body>
+    <h1>TinyGo WebAssembly Demo</h1>
+    <input type="text" id="input" />
+    <button onclick="run()">Hello</button>
+    <pre id="output"></pre>
+
+    <script>
+      const go = new Go(); // ← これが必須！！
+
+      async function run() {
+        const input = document.getElementById("input").value;
+        const greeting = window.getGreeting(input);
+        document.getElementById("output").textContent = greeting;
+      }
+
+      WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject).then((result) => {
+        go.run(result.instance);
+      });
+    </script>
+  </body>
+</html>
